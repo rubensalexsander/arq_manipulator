@@ -55,17 +55,15 @@ def main():
         arqm = Arq_txt(local)
 
         while arqm:
-            print(f"\n## Arq_manipulator: {local} ##\n\nc - Trocar arquivo\n0 - Ver arquivos\n1 - Alterar linha\n2 - Encontrar linha\n")
+            print(f"\n## Arq_manipulator: {local} ##\n\nc - Trocar arquivo\n0 - Ver arquivo\n1 - Alterar linha\n2 - Encontrar linha\n")
             resp = input("> ")
-
             if resp == "c":
                 break
 
             if resp == "0":
                 print("\n"+"-"*30)
-                for line in arqm.get_lines(): print(line)
+                for line in arqm.get_lines(): print(line, end="")
                 print("\n"+"-"*30+"\n")
-
             elif resp == "1":
                 texto = input("\nTexto:\n> ")
                 linha = int(input("\nLinha:\n> "))
