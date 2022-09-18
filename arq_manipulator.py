@@ -2,7 +2,7 @@ def list_to_arq(lt):
     return [str(i)+'\n' for i in lt]   
 
 class Arq_txt:
-    def __init__(self, local_file):
+    def __init__(self, local_file, section_key=None):
         self.local_file = local_file
         self.get_lines()
     
@@ -55,22 +55,36 @@ def main():
         arqm = Arq_txt(local)
 
         while arqm:
-            print(f"\n## Arq_manipulator: {local} ##\n\nc - Trocar arquivo\n0 - Ver arquivo\n1 - Alterar linha\n2 - Encontrar linha\n")
+            print(f"\n###### Arq_manipulator: {local} ######\n\nc - Trocar arquivo\n0 - Ver arquivo\n1 - Alterar linha\n2 - Encontrar linha\n")
             resp = input("> ")
+
+            parts = resp.split()
+            resp = parts[0]
+            
+            if len(parts) > 1:
+                args1 = int(parts[1])
+            else:
+                args1 = None
+
             if resp == "c":
                 break
 
             if resp == "0":
-                print("\n"+"-"*30)
-                for line in arqm.get_lines(): print(line, end="")
-                print("\n"+"-"*30+"\n")
+                print("\n"+"-"*30+'\n')
+                for line in arqm.get_lines():
+                    if not args1:
+                        print(line, end="")
+                    else:
+                        print(arqm.get_lines()[(args1)])
+                        break
+                print("-"*30+"\n")
             elif resp == "1":
                 texto = input("\nTexto:\n> ")
                 linha = int(input("\nLinha:\n> "))
                 arqm.rewrite_line(content=texto, line=linha)
             elif resp == "2":
                 texto = input("\nTexto:\n> ")
-                print(f"\nOcorrências de {texto} no arquivo: "+str(arqm.find(content=texto)))
+                print(f'\nOcorrências de "{texto}" no arquivo: '+str(arqm.find(content=texto)))
 
 if __name__ == '__main__':
     main()
