@@ -8,14 +8,13 @@ class Arq_txt:
     
     def connect(self, open_form='r'):
         try:
-            arq = open(self.local_file, open_form)
-            return arq
+            self.arq = open(self.local_file, open_form)
         except:
             print(f"Erro ao conectar em {self.local_file}")
             return None
 
-    def desconnect(self, arq):
-        arq.close()
+    def desconnect(self):
+        self.arq.close()
     
     def find(self, content):
         self.get_lines()
@@ -26,28 +25,28 @@ class Arq_txt:
         return locais
 
     def get_lines(self, line="all"):
-        arq = self.connect('r')
-        self.lines = arq.readlines()
-        self.desconnect(arq)
+        self.connect()
+        self.lines = self.arq.readlines()
+        self.desconnect()
         if line != "all":
             return self.lines[line]
         return self.lines
     
     def rewrite_all(self, content=['']):
-        arq = self.connect('w')
-        arq.writelines(content)
-        self.desconnect(arq)
+        self.connect('w')
+        self.arq.writelines(content)
+        self.desconnect()
     
     def rewrite_line(self, content='', line=-1):
-        arq = self.connect()
-        last_content = arq.readlines()
+        self.connect()
+        last_content = self.arq.readlines()
         if (len(last_content) - line) < 1:
             for i in range((len(last_content) - line)*-1+1):
                 last_content.append('\n')      
         last_content[line] = content+'\n'
         new_content = last_content
+        self.desconnect()
         self.rewrite_all(new_content)
-        self.desconnect(arq)
 
 def main():
     while True:
@@ -56,9 +55,8 @@ def main():
 
         while arqm:
             print(f"\n###### Arq_manipulator: {local} ######\n\nc - Trocar arquivo\n0 - Ver arquivo\n1 - Alterar linha\n2 - Encontrar linha\n")
-            resp = input("> ")
-
-            parts = resp.split()
+            
+            parts = input("> ").split()
             resp = parts[0]
             
             if len(parts) > 1:
@@ -78,10 +76,12 @@ def main():
                         print(arqm.get_lines()[(args1)])
                         break
                 print("-"*30+"\n")
+
             elif resp == "1":
                 texto = input("\nTexto:\n> ")
                 linha = int(input("\nLinha:\n> "))
                 arqm.rewrite_line(content=texto, line=linha)
+
             elif resp == "2":
                 texto = input("\nTexto:\n> ")
                 print(f'\nOcorrências de "{texto}" no arquivo: '+str(arqm.find(content=texto)))
